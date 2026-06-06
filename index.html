@@ -243,10 +243,10 @@
     <div id="stage5" class="stage">
         <div id="angry-section">
             <div class="angry-emoji">😡💢</div>
-            <div class="angry-text">你就那么不想见我吗？！哼！</div>
+            <div class="angry-text">老公！你就那么不想见我吗？！哼！老公宝宝不要见我了吗。哭哭！</div>
         </div>
         
-        <h1 id="question-title">Hexin，你愿不愿意和我一起过生日？</h1>
+        <h1 id="question-title">Hexin！老公宝宝，你愿不愿意和我一起过生日？</h1>
         
         <div class="btn-container">
             <button id="yes-btn" class="btn" onclick="sendNotification()">愿意</button>
@@ -257,7 +257,7 @@
     <div id="stage6" class="stage">
         <div class="angry-emoji">🎉🥰🥳</div>
         <h1 style="font-size: 3em; margin-top: 20px;">太棒了！老婆爱你！</h1>
-        <p style="font-size: 1.5em; color: #590d22; margin-top: 10px;">我已经收到你的心意啦，乖乖等我去找你庆祝吧！✨</p>
+        <p style="font-size: 1.5em; color: #590d22; margin-top: 10px;">我已经收到你的愿意啦，乖乖等我去找你庆祝吧！✨</p>
     </div>
 
     <script>
@@ -372,7 +372,7 @@
                 noBtn.style.top = Math.max(10, Math.random() * maxY) + 'px';
             }
 
-            // 20秒到达临界点：触发大逆转
+            // 6秒到达临界点：触发大逆转
             setTimeout(() => {
                 isChasingMode = true;
                 noBtn.removeEventListener('mouseenter', runaway);
@@ -402,7 +402,7 @@
 
                 // 启动追逐动画帧
                 requestAnimationFrame(chaseLoop);
-            }, 20000); // 20秒后大反转
+            }, 6000); // 20秒后大反转
         }
 
         let yesPos = { x: 0, y: 0, init: false };
