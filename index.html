@@ -14,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100dvh; /* 升级为动态视口高度，完美适配手机浏览器 */
+            height: 100dvh; /* 动态视口高度，完美适配手机浏览器 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -101,29 +101,55 @@
             font-weight: bold;
         }
 
-        /* 阶段 3：小游戏 1 */
+        /* 阶段 3：升级版翻牌记忆小游戏 */
         #game1-zone {
             width: 100%;
-            max-width: 700px;
-            height: 50vh;
-            background: rgba(255, 255, 255, 0.5);
-            border: 3px dashed #ff758f;
-            border-radius: 20px;
-            position: relative;
-            margin-top: 20px;
+            max-width: 340px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+            perspective: 1000px; /* 激活3D空间 */
         }
 
-        .game-heart {
-            position: absolute;
-            font-size: 45px;
+        .card {
+            width: 100%;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2);
             cursor: pointer;
-            animation: float 3s infinite ease-in-out alternate;
             -webkit-tap-highlight-color: transparent;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-20px) scale(1.1); }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            font-size: 40px;
+        }
+
+        .card-front {
+            background-color: #ff758f;
+            color: white;
+            border: 2px solid #fff;
+        }
+
+        .card-back {
+            background-color: #fff;
+            transform: rotateY(180deg);
+            border: 2px solid #ff758f;
         }
 
         /* 阶段 4：小游戏 2 礼盒 */
@@ -163,7 +189,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: background-color 0.3s;
             -webkit-tap-highlight-color: transparent;
-            touch-action: none; /* 防止手机端按钮拖拽造成页面滚动 */
+            touch-action: none;
         }
 
         #yes-btn {
@@ -213,7 +239,6 @@
 </head>
 <body>
 
-    <!-- 阶段 1：10秒开场白 -->
     <div id="stage1" class="stage active">
         <div class="wishes-box">
             <h1>生日快乐，老公 ❤️</h1>
@@ -226,21 +251,17 @@
         </div>
     </div>
 
-    <!-- 阶段 2：3秒爱心大爆炸 -->
     <div id="stage2" class="stage" style="background: #ff758f;">
         <canvas id="explosion-canvas"></canvas>
         <div class="loading-text">💖 正在为你发射一万个爱心转场...</div>
     </div>
 
-    <!-- 阶段 3：小游戏 1 (抓爱心) -->
     <div id="stage3" class="stage">
-        <h1>第一关：抓住我的真心 🤲</h1>
-        <p style="font-size: 1.1em; color: #590d22;">点击屏幕中任意 3 个漂浮的爱心解锁下一关</p>
-        <h2 id="score-board" style="color: #ff4d6d; margin-top: 10px;">0 / 3</h2>
+        <h1>第一关：默契记忆考验 🧠</h1>
+        <p style="font-size: 1.1em; color: #590d22; margin-top: 5px;">连续翻开两张相同图案的卡牌即可成功配对</p>
         <div id="game1-zone"></div>
     </div>
 
-    <!-- 阶段 4：小游戏 2 (选礼盒) -->
     <div id="stage4" class="stage">
         <h1>第二关：凭直觉选一个生日礼盒 🎁</h1>
         <p style="font-size: 1.1em; color: #590d22;">里面藏着我今天最想问你的终极问题...</p>
@@ -251,9 +272,7 @@
         </div>
     </div>
 
-    <!-- 阶段 5：终极提问与逃跑/追逐 -->
     <div id="stage5" class="stage">
-        <!-- 6秒后会展现的生气区域 -->
         <div id="angry-section">
             <div class="angry-emoji">😡💢</div>
             <div class="angry-text">你就那么不想见我吗？！哼！</div>
@@ -267,7 +286,6 @@
         </div>
     </div>
 
-    <!-- 阶段 6：大结局成功页面 -->
     <div id="stage6" class="stage">
         <div class="angry-emoji">🎉🥰🥳</div>
         <h1 style="font-size: 2.5em; margin-top: 20px;">太棒了！老婆爱你！</h1>
@@ -299,7 +317,7 @@
             }
         }, 100);
 
-        // --- 2. 3秒爱心大爆炸逻辑 (优化渲染) ---
+        // --- 2. 3秒爱心大爆炸逻辑 ---
         function runExplosion() {
             const canvas = document.getElementById('explosion-canvas');
             const ctx = canvas.getContext('2d');
@@ -333,33 +351,73 @@
             setTimeout(() => nextStage(2), 3000);
         }
 
-        // --- 3. 小游戏 1：抓3个爱心 ---
+        // --- 3. 升级版小游戏 1：翻牌记忆对对碰 ---
         function initGame1() {
             const zone = document.getElementById('game1-zone');
-            const scoreBoard = document.getElementById('score-board');
-            let caught = 0;
+            // 3对卡牌图标
+            const icons = ['❤️', '🎂', '🎁', '❤️', '🎂', '🎁'];
+            // 随机洗牌算法
+            icons.sort(() => Math.random() - 0.5);
 
-            for (let i = 0; i < 3; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'game-heart';
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 80 + 5 + '%';
-                heart.style.top = Math.random() * 70 + 5 + '%';
-                heart.style.animationDelay = (Math.random() * 2) + 's';
+            let flippedCards = [];
+            let matchedPairs = 0;
+            let lockBoard = false;
 
-                const catchHeart = function(e) {
-                    e.preventDefault(); 
-                    if(!this.parentNode) return;
-                    this.remove();
-                    caught++;
-                    scoreBoard.innerText = `${caught} / 3`;
-                    if (caught === 3) setTimeout(() => nextStage(3), 500);
+            // 动态创建卡牌结构
+            icons.forEach((icon) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.icon = icon;
+
+                const front = document.createElement('div');
+                front.className = 'card-face card-front';
+                front.innerHTML = '❓';
+
+                const back = document.createElement('div');
+                back.className = 'card-face card-back';
+                back.innerHTML = icon;
+
+                card.appendChild(front);
+                card.appendChild(back);
+
+                // 核心翻牌点击事件处理
+                const handleFlip = function(e) {
+                    if (e) e.preventDefault();
+                    if (lockBoard) return;
+                    if (this.classList.contains('flipped')) return;
+                    if (flippedCards.length > 0 && flippedCards[0] === this) return;
+
+                    this.classList.add('flipped');
+                    flippedCards.push(this);
+
+                    if (flippedCards.length === 2) {
+                        lockBoard = true;
+                        // 检查两张牌是否匹配
+                        const isMatch = flippedCards[0].dataset.icon === flippedCards[1].dataset.icon;
+                        if (isMatch) {
+                            matchedPairs++;
+                            flippedCards = [];
+                            lockBoard = false;
+                            // 成功匹配完所有3对，自动进入下一关
+                            if (matchedPairs === 3) {
+                                setTimeout(() => nextStage(3), 800);
+                            }
+                        } else {
+                            // 不匹配，半秒后自动翻回去
+                            setTimeout(() => {
+                                flippedCards[0].classList.remove('flipped');
+                                flippedCards[1].classList.remove('flipped');
+                                flippedCards = [];
+                                lockBoard = false;
+                            }, 600);
+                        }
+                    }
                 };
-                heart.addEventListener('mousedown', catchHeart);
-                heart.addEventListener('touchstart', catchHeart, {passive: false});
-                
-                zone.appendChild(heart);
-            }
+
+                card.addEventListener('mousedown', handleFlip);
+                card.addEventListener('touchstart', handleFlip, {passive: false});
+                zone.appendChild(card);
+            });
         }
 
         // --- 5. 终极提问与逃跑/狂轰滥炸追逐逻辑 (GPU 加速版) ---
@@ -468,7 +526,6 @@
         function sendNotification() {
             isChasingMode = false;
             
-            // 如果你想用邮箱接收真实通知，去申请 formspree.io 的链接替换在下面：
             const formspreeEndpoint = "https://formspree.io/f/your_id_here"; 
             
             fetch(formspreeEndpoint, {
