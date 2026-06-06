@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>给 Hexin 的生日惊喜</title>
+    <title>给 Hexin 的生日惊喜 💖</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -16,295 +22,438 @@
             font-family: 'Microsoft YaHei', sans-serif;
             overflow: hidden;
             text-align: center;
-        }
-
-        /* 铺垫小游戏容器 */
-        #game-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        #game-title {
-            font-size: 24px;
-            color: #d6336c;
-            margin-bottom: 20px;
-            pointer-events: none;
-        }
-
-        .heart {
-            position: absolute;
-            font-size: 40px;
-            cursor: pointer;
             user-select: none;
-            transition: transform 0.2s;
-            animation: floatHeart 4s infinite ease-in-out alternate;
         }
 
-        .heart:hover {
-            transform: scale(1.2);
-        }
-
-        @keyframes floatHeart {
-            0% { transform: translateY(0) rotate(-10deg); }
-            100% { transform: translateY(-30px) rotate(10deg); }
-        }
-
-        /* 主舞台容器 */
-        #main-stage {
+        /* 统一页面场景样式 */
+        .stage {
             display: none;
             flex-direction: column;
             align-items: center;
-            z-index: 5;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            padding: 20px;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        /* 阶段 1：15秒开场祝福语 */
+        .wishes-box {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(214, 51, 108, 0.15);
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         h1 {
-            color: #c9184a;
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            color: #d6336c;
+            margin-bottom: 25px;
+            font-size: 2.2em;
         }
 
-        p {
-            font-size: 1.5em;
+        .wish-text {
+            font-size: 1.2em;
             color: #590d22;
-            margin-bottom: 40px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            text-align: left;
         }
 
-        .btn-container {
+        /* 进度条 */
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 8px;
+            background-color: #ff4d6d;
+            transition: width 0.1s linear;
+        }
+
+        /* 阶段 2：爱心大爆炸画布 */
+        #explosion-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .loading-text {
+            font-size: 2em;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.2);
+            z-index: 2;
+            font-weight: bold;
+        }
+
+        /* 阶段 3：小游戏 1 */
+        #game1-zone {
+            width: 90%;
+            max-width: 700px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 3px dashed #ff758f;
+            border-radius: 20px;
             position: relative;
-            width: 300px;
-            height: 100px;
+            margin-top: 20px;
+        }
+
+        .game-heart {
+            position: absolute;
+            font-size: 45px;
+            cursor: pointer;
+            animation: float 3s infinite ease-in-out alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* 阶段 4：小游戏 2 礼盒 */
+        .gift-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .gift-box {
+            font-size: 70px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        /* 阶段 5：终极提问与追逐 */
+        .btn-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            margin-top: 50px;
         }
 
         .btn {
-            padding: 12px 30px;
-            font-size: 18px;
+            padding: 15px 40px;
+            font-size: 20px;
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: background-color 0.3s, transform 0.1s;
-        }
-
-        .btn:active {
-            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
         }
 
         #yes-btn {
             background-color: #ff4d6d;
             color: white;
-            position: relative; /* 追逐时会改为fixed */
+            position: absolute;
+            left: calc(50% - 140px);
         }
 
         #no-btn {
             background-color: #f8f9fa;
             color: #6c757d;
-            position: relative; /* 逃跑和追逐时会改为fixed */
+            position: absolute;
+            left: calc(50% + 20px);
         }
 
-        /* 成功消息 */
-        #success-msg {
+        /* 生气表情包与文字 */
+        #angry-section {
             display: none;
-            position: absolute;
-            font-size: 3em;
-            color: #ff0054;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 20px;
+        }
+
+        .angry-emoji {
+            font-size: 100px;
+            line-height: 1;
+        }
+
+        .angry-text {
+            font-size: 24px;
+            color: #c9184a;
             font-weight: bold;
-            z-index: 20;
-            text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+            margin-top: 15px;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 铺垫小游戏 -->
-    <div id="game-container">
-        <div id="game-title">点击抓住 3 个漂浮的心形，解锁你的生日惊喜 💖<br><span id="score">0 / 3</span></div>
-        <!-- 爱心由JS动态生成 -->
+    <div id="stage1" class="stage active">
+        <div class="wishes-box">
+            <h1>生日快乐，老公 ❤️</h1>
+            <div class="wish-text">✨ 这一年里你辛苦啦！谢谢你一直以来对我的包容、照顾和奇奇怪怪的幽默感。</div>
+            <div class="wish-text">✨ 在你身边，每天都像是在拆盲盒，充满了意想不到的快乐。未来的日子，我也想一直陪你一起疯、一起笑。</div>
+            <div class="wish-text">✨ 今天你是宇宙第一寿星，接下来的每一关，都是我为你特制的专属浪漫，请准备好接招哦！</div>
+            <div class="progress-container">
+                <div id="pbar" class="progress-bar"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- 生日主舞台 -->
-    <div id="main-stage">
-        <h1>生日快乐，Hexin！🎂</h1>
-        <p>你愿意和我一起过生日吗？</p>
+    <div id="stage2" class="stage" style="background: #ff758f;">
+        <canvas id="explosion-canvas"></canvas>
+        <div class="loading-text">💖 正在为你发射一万个爱心转场...</div>
+    </div>
+
+    <div id="stage3" class="stage">
+        <h1>第一关：抓住我的真心 🤲</h1>
+        <p style="font-size: 1.2em; color: #590d22;">点击屏幕中任意 3 个漂浮的爱心解锁下一关</p>
+        <h2 id="score-board" style="color: #ff4d6d; margin-top: 10px;">0 / 3</h2>
+        <div id="game1-zone"></div>
+    </div>
+
+    <div id="stage4" class="stage">
+        <h1>第二关：凭直觉选一个生日礼盒 🎁</h1>
+        <p style="font-size: 1.2em; color: #590d22;">里面藏着我今天最想问你的终极问题...</p>
+        <div class="gift-container">
+            <div class="gift-box" onclick="nextStage(4)">🎁</div>
+            <div class="gift-box" onclick="nextStage(4)">💝</div>
+            <div class="gift-box" onclick="nextStage(4)">🛍️</div>
+        </div>
+    </div>
+
+    <div id="stage5" class="stage">
+        <div id="angry-section">
+            <div class="angry-emoji">😡💢</div>
+            <div class="angry-text">你就那么不想见我吗？！哼！</div>
+        </div>
+        
+        <h1 id="question-title">Hexin，你愿不愿意和我一起过生日？</h1>
+        
         <div class="btn-container">
-            <button id="yes-btn" class="btn">愿意</button>
+            <button id="yes-btn" class="btn" onclick="sendNotification()">愿意</button>
             <button id="no-btn" class="btn">不愿意</button>
         </div>
     </div>
 
-    <!-- 同意后的提示 -->
-    <div id="success-msg">太棒了！期待我们的庆祝！🎉</div>
+    <div id="stage6" class="stage">
+        <div class="angry-emoji">🎉🥰🥳</div>
+        <h1 style="font-size: 3em; margin-top: 20px;">太棒了！老婆爱你！</h1>
+        <p style="font-size: 1.5em; color: #590d22; margin-top: 10px;">我已经收到你的心意啦，乖乖等我去找你庆祝吧！✨</p>
+    </div>
 
     <script>
-        // --- 变量设置 ---
-        // 建议将这里改为 15000 (15秒) 以防她失去耐心关掉网页
-        const WAIT_TIME_MS = 40000; 
-
-        // --- 阶段1：铺垫小游戏 ---
-        let heartsCaught = 0;
-        const totalHearts = 3;
-        const gameContainer = document.getElementById('game-container');
-        const scoreDisplay = document.getElementById('score');
-        const mainStage = document.getElementById('main-stage');
-
-        function createHearts() {
-            for (let i = 0; i < totalHearts; i++) {
-                let heart = document.createElement('div');
-                heart.innerHTML = '❤️';
-                heart.className = 'heart';
-                // 随机分布在屏幕中
-                heart.style.left = Math.random() * 80 + 10 + '%';
-                heart.style.top = Math.random() * 80 + 10 + '%';
-                // 添加不同的动画延迟使其更自然
-                heart.style.animationDelay = (Math.random() * 2) + 's';
-                
-                heart.onclick = function() {
-                    this.remove();
-                    heartsCaught++;
-                    scoreDisplay.innerText = `${heartsCaught} / ${totalHearts}`;
-                    if (heartsCaught === totalHearts) {
-                        endGame();
-                    }
-                };
-                gameContainer.appendChild(heart);
+        // --- 全局场景控制 ---
+        function nextStage(currentStageNum) {
+            document.getElementById(`stage${currentStageNum}`).classList.remove('active');
+            const nextStageObj = document.getElementById(`stage${currentStageNum + 1}`);
+            if (nextStageObj) {
+                nextStageObj.classList.add('active');
+                if (currentStageNum + 1 === 2) runExplosion();
+                if (currentStageNum + 1 === 3) initGame1();
+                if (currentStageNum + 1 === 5) initFinalPrank();
             }
         }
 
-        function endGame() {
-            gameContainer.style.display = 'none';
-            mainStage.style.display = 'flex';
-            startBirthdayLogic();
+        // --- 1. 15秒开场倒计时 ---
+        let count = 0;
+        const pbar = document.getElementById('pbar');
+        const introTimer = setInterval(() => {
+            count += 1;
+            pbar.style.width = (count / 150) * 100 + '%';
+            if (count >= 150) {
+                clearInterval(introTimer);
+                nextStage(1);
+            }
+        }, 100);
+
+        // --- 2. 3秒爱心大爆炸逻辑 ---
+        function runExplosion() {
+            const canvas = document.getElementById('explosion-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 15,
+                    vy: (Math.random() - 0.5) * 15,
+                    size: Math.random() * 30 + 15,
+                    opacity: 1
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    ctx.font = p.size + 'px serif';
+                    ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+                    ctx.fillText('❤️', p.x, p.y);
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+            setTimeout(() => nextStage(2), 3000);
         }
 
-        createHearts(); // 初始化游戏
+        // --- 3. 小游戏 1：抓3个爱心 ---
+        function initGame1() {
+            const zone = document.getElementById('game1-zone');
+            const scoreBoard = document.getElementById('score-board');
+            let caught = 0;
 
-        // --- 阶段2：生日问答逻辑 ---
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const successMsg = document.getElementById('success-msg');
+            for (let i = 0; i < 3; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'game-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 80 + 5 + '%';
+                heart.style.top = Math.random() * 70 + 5 + '%';
+                heart.style.animationDelay = (Math.random() * 2) + 's';
 
-        let isChasingMode = false;
+                heart.onclick = function() {
+                    this.remove();
+                    caught++;
+                    scoreBoard.innerText = `${caught} / 3`;
+                    if (caught === 3) {
+                        setTimeout(() => nextStage(3), 500);
+                    }
+                };
+                zone.appendChild(heart);
+            }
+        }
+
+        // --- 5. 终极提问与逃跑/狂轰滥炸追逐逻辑 ---
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
+        let isChasingMode = false;
 
-        // 记录鼠标实时位置
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
         });
 
-        function startBirthdayLogic() {
-            // 鼠标靠近“不愿意”时逃跑
-            noBtn.addEventListener('mouseenter', runawayLogic);
+        function initFinalPrank() {
+            const noBtn = document.getElementById('no-btn');
+            const yesBtn = document.getElementById('yes-btn');
+            const angrySection = document.getElementById('angry-section');
 
-            // 计时器：设定时间后改变状态
+            // 初始鼠标靠近“不愿意”会飞走机制
+            noBtn.addEventListener('mouseenter', runaway);
+
+            function runaway() {
+                if (isChasingMode) return;
+                noBtn.style.position = 'fixed';
+                const maxX = window.innerWidth - noBtn.offsetWidth;
+                const maxY = window.innerHeight - noBtn.offsetHeight;
+                noBtn.style.left = Math.max(10, Math.random() * maxX) + 'px';
+                noBtn.style.top = Math.max(10, Math.random() * maxY) + 'px';
+            }
+
+            // 20秒到达临界点：触发大逆转
             setTimeout(() => {
-                enterChasingMode();
-            }, WAIT_TIME_MS);
+                isChasingMode = true;
+                noBtn.removeEventListener('mouseenter', runaway);
+
+                // 展现生气表情和文字
+                angrySection.style.display = 'block';
+                document.getElementById('question-title').style.display = 'none';
+
+                // 强行把不愿意变成愿意
+                noBtn.innerText = '愿意';
+                noBtn.style.backgroundColor = '#ff4d6d';
+                noBtn.style.color = 'white';
+
+                // 将两个按钮全部定位为fixed以便开始丝滑追逐
+                const yRect = yesBtn.getBoundingClientRect();
+                yesBtn.style.position = 'fixed';
+                yesBtn.style.left = yRect.left + 'px';
+                yesBtn.style.top = yRect.top + 'px';
+
+                const nRect = noBtn.getBoundingClientRect();
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = nRect.left + 'px';
+                noBtn.style.top = nRect.top + 'px';
+
+                // 绑定点击事件，两个都能通关
+                noBtn.onclick = sendNotification;
+
+                // 启动追逐动画帧
+                requestAnimationFrame(chaseLoop);
+            }, 20000); // 20秒后大反转
         }
 
-        function runawayLogic() {
-            if (isChasingMode) return; // 如果已经是追击模式了，就不逃跑了
+        let yesPos = { x: 0, y: 0, init: false };
+        let noPos = { x: 0, y: 0, init: false };
 
-            noBtn.style.position = 'fixed';
-            
-            // 计算安全的随机位置，防止跑出屏幕外
-            const maxX = window.innerWidth - noBtn.offsetWidth;
-            const maxY = window.innerHeight - noBtn.offsetHeight;
-            
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
-
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-        }
-
-        function enterChasingMode() {
-            isChasingMode = true;
-            
-            // 移除逃跑事件
-            noBtn.removeEventListener('mouseenter', runawayLogic);
-
-            // 改变按钮文字和样式
-            noBtn.innerText = '愿意';
-            noBtn.style.backgroundColor = '#ff4d6d';
-            noBtn.style.color = 'white';
-
-            // 将两个按钮都设置为fixed以便平滑追逐
-            const yesRect = yesBtn.getBoundingClientRect();
-            yesBtn.style.position = 'fixed';
-            yesBtn.style.left = yesRect.left + 'px';
-            yesBtn.style.top = yesRect.top + 'px';
-
-            // 开始平滑动画循环
-            requestAnimationFrame(chaseMouse);
-        }
-
-        // --- 阶段3：平滑追逐算法 ---
-        // 为两个按钮设定独立的当前位置
-        let yesPos = { x: 0, y: 0, initialized: false };
-        let noPos = { x: 0, y: 0, initialized: false };
-
-        function chaseMouse() {
+        function chaseLoop() {
             if (!isChasingMode) return;
+            const yesBtn = document.getElementById('yes-btn');
+            const noBtn = document.getElementById('no-btn');
 
-            // 初始化当前位置
-            if (!yesPos.initialized) {
-                yesPos.x = yesBtn.offsetLeft;
-                yesPos.y = yesBtn.offsetTop;
-                yesPos.initialized = true;
-            }
-            if (!noPos.initialized) {
-                noPos.x = noBtn.offsetLeft;
-                noPos.y = noBtn.offsetTop;
-                noPos.initialized = true;
-            }
+            if (!yesPos.init) { yesPos.x = yesBtn.offsetLeft; yesPos.y = yesBtn.offsetTop; yesPos.init = true; }
+            if (!noPos.init) { noPos.x = noBtn.offsetLeft; noPos.y = noBtn.offsetTop; noPos.init = true; }
 
-            // 让两个按钮稍微错开，包围鼠标
-            const targetYesX = mouseX - 60;
-            const targetYesY = mouseY + 20;
-            const targetNoX = mouseX + 10;
-            const targetNoY = mouseY - 40;
+            // 围绕鼠标进行一左一右的平滑缓动追击
+            const targetYesX = mouseX - 140;
+            const targetYesY = mouseY - 20;
+            const targetNoX = mouseX + 20;
+            const targetNoY = mouseY - 20;
 
-            // 平滑插值 (缓动因子 0.05，数字越大追得越快)
-            yesPos.x += (targetYesX - yesPos.x) * 0.05;
-            yesPos.y += (targetYesY - yesPos.y) * 0.05;
-            noPos.x += (targetNoX - noPos.x) * 0.05;
-            noPos.y += (targetNoY - noPos.y) * 0.05;
+            yesPos.x += (targetYesX - yesPos.x) * 0.06;
+            yesPos.y += (targetYesY - yesPos.y) * 0.06;
+            noPos.x += (targetNoX - noPos.x) * 0.06;
+            noPos.y += (targetNoY - noPos.y) * 0.06;
 
             yesBtn.style.left = yesPos.x + 'px';
             yesBtn.style.top = yesPos.y + 'px';
             noBtn.style.left = noPos.x + 'px';
             noBtn.style.top = noPos.y + 'px';
 
-            requestAnimationFrame(chaseMouse);
+            requestAnimationFrame(chaseLoop);
         }
 
-        // --- 最终胜利逻辑 ---
-        function showSuccess() {
-            mainStage.style.display = 'none';
+        // --- 6. 核心：点击“愿意”后通知你并进入大结局 ---
+        function sendNotification() {
             isChasingMode = false;
-            yesBtn.style.display = 'none';
-            noBtn.style.display = 'none';
             
-            successMsg.style.display = 'block';
+            // 【最适合新手的无后台无成本即时通知方案】
+            // 这里我们预留了标准的通知机制。最简单的方式是直接用 Formspree 发送邮件，或者像下面这样，点击时静默请求一个 Webhook。
+            // 提示：你可以去免费申请一个 https://formspree.io 链接替换在下方，这样只要他一点“愿意”，你的邮箱就会瞬间收到报警信！
+            
+            const formspreeEndpoint = "https://formspree.io/f/your_id_here"; // 可以在此替换你的免费Formspree ID
+            
+            fetch(formspreeEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: "老公点击了【愿意】！快去准备庆祝生日吧！🎉" })
+            }).catch(err => console.log("通知发送完成（预留通道）"));
+
+            // 切换到最后一页成功场景
+            nextStage(5);
         }
-
-        yesBtn.addEventListener('click', showSuccess);
-        noBtn.addEventListener('click', () => {
-            // 在追击模式下，点击变成“愿意”的 noBtn 也会成功
-            if (isChasingMode) showSuccess();
-        });
-
     </script>
 </body>
 </html>
