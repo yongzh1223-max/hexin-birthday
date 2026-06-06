@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>给 Hexin 的生日惊喜 💖</title>
     <style>
         * {
@@ -14,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            height: 100vh;
+            height: 100dvh; /* 升级为动态视口高度，完美适配手机浏览器 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,6 +23,7 @@
             overflow: hidden;
             text-align: center;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         /* 统一页面场景样式 */
@@ -41,11 +42,12 @@
             display: flex;
         }
 
-        /* 阶段 1：15秒开场祝福语 */
+        /* 阶段 1：开场祝福语 */
         .wishes-box {
-            max-width: 600px;
+            max-width: 90%;
+            width: 600px;
             background: rgba(255, 255, 255, 0.85);
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(214, 51, 108, 0.15);
             animation: fadeIn 1.5s ease-in-out;
@@ -54,13 +56,13 @@
         h1 {
             color: #d6336c;
             margin-bottom: 25px;
-            font-size: 2.2em;
+            font-size: 1.8em;
         }
 
         .wish-text {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #590d22;
-            line-height: 1.8;
+            line-height: 1.6;
             margin-bottom: 15px;
             text-align: left;
         }
@@ -92,7 +94,7 @@
         }
 
         .loading-text {
-            font-size: 2em;
+            font-size: 1.5em;
             color: #fff;
             text-shadow: 0 0 10px rgba(0,0,0,0.2);
             z-index: 2;
@@ -101,9 +103,9 @@
 
         /* 阶段 3：小游戏 1 */
         #game1-zone {
-            width: 90%;
+            width: 100%;
             max-width: 700px;
-            height: 400px;
+            height: 50vh;
             background: rgba(255, 255, 255, 0.5);
             border: 3px dashed #ff758f;
             border-radius: 20px;
@@ -116,6 +118,7 @@
             font-size: 45px;
             cursor: pointer;
             animation: float 3s infinite ease-in-out alternate;
+            -webkit-tap-highlight-color: transparent;
         }
 
         @keyframes float {
@@ -127,17 +130,18 @@
         .gift-container {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
             margin-top: 30px;
         }
 
         .gift-box {
-            font-size: 70px;
+            font-size: 60px;
             cursor: pointer;
             transition: transform 0.3s;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .gift-box:hover {
+        .gift-box:hover, .gift-box:active {
             transform: scale(1.2) rotate(5deg);
         }
 
@@ -150,28 +154,31 @@
         }
 
         .btn {
-            padding: 15px 40px;
-            font-size: 20px;
+            padding: 12px 30px;
+            font-size: 18px;
             border: none;
             border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: background-color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none; /* 防止手机端按钮拖拽造成页面滚动 */
         }
 
         #yes-btn {
             background-color: #ff4d6d;
             color: white;
             position: absolute;
-            left: calc(50% - 140px);
+            left: calc(50% - 120px);
         }
 
         #no-btn {
             background-color: #f8f9fa;
             color: #6c757d;
             position: absolute;
-            left: calc(50% + 20px);
+            left: calc(50% + 10px);
+            z-index: 10;
         }
 
         /* 生气表情包与文字 */
@@ -182,12 +189,12 @@
         }
 
         .angry-emoji {
-            font-size: 100px;
+            font-size: 80px;
             line-height: 1;
         }
 
         .angry-text {
-            font-size: 24px;
+            font-size: 20px;
             color: #c9184a;
             font-weight: bold;
             margin-top: 15px;
@@ -206,33 +213,37 @@
 </head>
 <body>
 
+    <!-- 阶段 1：10秒开场白 -->
     <div id="stage1" class="stage active">
         <div class="wishes-box">
             <h1>生日快乐，老公 ❤️</h1>
-            <div class="wish-text">✨ 老公，你辛苦啦！又变漂亮啦！谢谢你一直以来对我的包容、照顾和奇奇怪怪的幽默感。</div>
-            <div class="wish-text">✨ 有你在，每天都像是在拆盲盒，充满了意想不到的快乐。未来的日子，我也想老公继续陪我。</div>
-            <div class="wish-text">✨ 老公，我先在这里和你说一次生日快乐！天天开心，越来越漂亮！要想我！要喜欢我！</div>
+            <div class="wish-text">✨ 这一年里你辛苦啦！谢谢你一直以来对我的包容、照顾和奇奇怪怪的幽默感。</div>
+            <div class="wish-text">✨ 在你身边，每天都像是在拆盲盒，充满了意想不到的快乐。未来的日子，我也想一直陪你一起疯、一起笑。</div>
+            <div class="wish-text">✨ 今天你是宇宙第一寿星，接下来的每一关，都是我为你特制的专属浪漫，请准备好接招哦！</div>
             <div class="progress-container">
                 <div id="pbar" class="progress-bar"></div>
             </div>
         </div>
     </div>
 
+    <!-- 阶段 2：3秒爱心大爆炸 -->
     <div id="stage2" class="stage" style="background: #ff758f;">
         <canvas id="explosion-canvas"></canvas>
         <div class="loading-text">💖 正在为你发射一万个爱心转场...</div>
     </div>
 
+    <!-- 阶段 3：小游戏 1 (抓爱心) -->
     <div id="stage3" class="stage">
         <h1>第一关：抓住我的真心 🤲</h1>
-        <p style="font-size: 1.2em; color: #590d22;">点击屏幕中任意 3 个漂浮的爱心解锁下一关</p>
+        <p style="font-size: 1.1em; color: #590d22;">点击屏幕中任意 3 个漂浮的爱心解锁下一关</p>
         <h2 id="score-board" style="color: #ff4d6d; margin-top: 10px;">0 / 3</h2>
         <div id="game1-zone"></div>
     </div>
 
+    <!-- 阶段 4：小游戏 2 (选礼盒) -->
     <div id="stage4" class="stage">
         <h1>第二关：凭直觉选一个生日礼盒 🎁</h1>
-        <p style="font-size: 1.2em; color: #590d22;">里面藏着我今天最想问你的终极问题...</p>
+        <p style="font-size: 1.1em; color: #590d22;">里面藏着我今天最想问你的终极问题...</p>
         <div class="gift-container">
             <div class="gift-box" onclick="nextStage(4)">🎁</div>
             <div class="gift-box" onclick="nextStage(4)">💝</div>
@@ -240,13 +251,15 @@
         </div>
     </div>
 
+    <!-- 阶段 5：终极提问与逃跑/追逐 -->
     <div id="stage5" class="stage">
+        <!-- 6秒后会展现的生气区域 -->
         <div id="angry-section">
             <div class="angry-emoji">😡💢</div>
-            <div class="angry-text">老公！你就那么不想见我吗？！哼！老公宝宝不要见我了吗。哭哭！</div>
+            <div class="angry-text">你就那么不想见我吗？！哼！</div>
         </div>
         
-        <h1 id="question-title">Hexin！老公宝宝，你愿不愿意和我一起过生日？</h1>
+        <h1 id="question-title">Hexin，你愿不愿意和我一起过生日？</h1>
         
         <div class="btn-container">
             <button id="yes-btn" class="btn" onclick="sendNotification()">愿意</button>
@@ -254,10 +267,11 @@
         </div>
     </div>
 
+    <!-- 阶段 6：大结局成功页面 -->
     <div id="stage6" class="stage">
         <div class="angry-emoji">🎉🥰🥳</div>
-        <h1 style="font-size: 3em; margin-top: 20px;">太棒了！老婆爱你！</h1>
-        <p style="font-size: 1.5em; color: #590d22; margin-top: 10px;">我已经收到你的愿意啦，乖乖等我去找你庆祝吧！✨</p>
+        <h1 style="font-size: 2.5em; margin-top: 20px;">太棒了！老婆爱你！</h1>
+        <p style="font-size: 1.2em; color: #590d22; margin-top: 10px;">我已经收到你的心意啦，乖乖等我去找你庆祝吧！✨</p>
     </div>
 
     <script>
@@ -273,7 +287,7 @@
             }
         }
 
-        // --- 1. 15秒开场倒计时 ---
+        // --- 1. 10秒开场倒计时 ---
         let count = 0;
         const pbar = document.getElementById('pbar');
         const introTimer = setInterval(() => {
@@ -285,7 +299,7 @@
             }
         }, 100);
 
-        // --- 2. 3秒爱心大爆炸逻辑 ---
+        // --- 2. 3秒爱心大爆炸逻辑 (优化渲染) ---
         function runExplosion() {
             const canvas = document.getElementById('explosion-canvas');
             const ctx = canvas.getContext('2d');
@@ -293,7 +307,7 @@
             canvas.height = window.innerHeight;
 
             let particles = [];
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 40; i++) {
                 particles.push({
                     x: canvas.width / 2,
                     y: canvas.height / 2,
@@ -333,104 +347,119 @@
                 heart.style.top = Math.random() * 70 + 5 + '%';
                 heart.style.animationDelay = (Math.random() * 2) + 's';
 
-                heart.onclick = function() {
+                const catchHeart = function(e) {
+                    e.preventDefault(); 
+                    if(!this.parentNode) return;
                     this.remove();
                     caught++;
                     scoreBoard.innerText = `${caught} / 3`;
-                    if (caught === 3) {
-                        setTimeout(() => nextStage(3), 500);
-                    }
+                    if (caught === 3) setTimeout(() => nextStage(3), 500);
                 };
+                heart.addEventListener('mousedown', catchHeart);
+                heart.addEventListener('touchstart', catchHeart, {passive: false});
+                
                 zone.appendChild(heart);
             }
         }
 
-        // --- 5. 终极提问与逃跑/狂轰滥炸追逐逻辑 ---
+        // --- 5. 终极提问与逃跑/狂轰滥炸追逐逻辑 (GPU 加速版) ---
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
         let isChasingMode = false;
 
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        document.addEventListener('touchmove', (e) => { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }, {passive: true});
+        document.addEventListener('touchstart', (e) => { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }, {passive: true});
+
+        let yesPos = { x: 0, y: 0, init: false };
+        let noPos = { x: 0, y: 0, init: false };
 
         function initFinalPrank() {
             const noBtn = document.getElementById('no-btn');
             const yesBtn = document.getElementById('yes-btn');
             const angrySection = document.getElementById('angry-section');
 
-            // 初始鼠标靠近“不愿意”会飞走机制
             noBtn.addEventListener('mouseenter', runaway);
+            noBtn.addEventListener('touchstart', runaway, {passive: false});
 
-            function runaway() {
+            function runaway(e) {
+                if(e) e.preventDefault();
                 if (isChasingMode) return;
+                
                 noBtn.style.position = 'fixed';
+                noBtn.style.top = '0px';
+                noBtn.style.left = '0px';
+                
                 const maxX = window.innerWidth - noBtn.offsetWidth;
                 const maxY = window.innerHeight - noBtn.offsetHeight;
-                noBtn.style.left = Math.max(10, Math.random() * maxX) + 'px';
-                noBtn.style.top = Math.max(10, Math.random() * maxY) + 'px';
+                
+                noPos.x = Math.max(10, Math.random() * maxX);
+                noPos.y = Math.max(10, Math.random() * maxY);
+                noPos.init = true;
+                
+                noBtn.style.transform = `translate3d(${noPos.x}px, ${noPos.y}px, 0)`;
             }
 
             // 6秒到达临界点：触发大逆转
             setTimeout(() => {
                 isChasingMode = true;
                 noBtn.removeEventListener('mouseenter', runaway);
+                noBtn.removeEventListener('touchstart', runaway);
 
-                // 展现生气表情和文字
                 angrySection.style.display = 'block';
                 document.getElementById('question-title').style.display = 'none';
 
-                // 强行把不愿意变成愿意
                 noBtn.innerText = '愿意';
                 noBtn.style.backgroundColor = '#ff4d6d';
                 noBtn.style.color = 'white';
 
-                // 将两个按钮全部定位为fixed以便开始丝滑追逐
                 const yRect = yesBtn.getBoundingClientRect();
                 yesBtn.style.position = 'fixed';
-                yesBtn.style.left = yRect.left + 'px';
-                yesBtn.style.top = yRect.top + 'px';
+                yesBtn.style.left = '0px';
+                yesBtn.style.top = '0px';
+                
+                if (!yesPos.init) {
+                    yesPos.x = yRect.left;
+                    yesPos.y = yRect.top;
+                    yesPos.init = true;
+                }
+                yesBtn.style.transform = `translate3d(${yesPos.x}px, ${yesPos.y}px, 0)`;
 
-                const nRect = noBtn.getBoundingClientRect();
-                noBtn.style.position = 'fixed';
-                noBtn.style.left = nRect.left + 'px';
-                noBtn.style.top = nRect.top + 'px';
+                if (!noPos.init) {
+                    const nRect = noBtn.getBoundingClientRect();
+                    noBtn.style.position = 'fixed';
+                    noBtn.style.left = '0px';
+                    noBtn.style.top = '0px';
+                    noPos.x = nRect.left;
+                    noPos.y = nRect.top;
+                    noPos.init = true;
+                }
 
-                // 绑定点击事件，两个都能通关
                 noBtn.onclick = sendNotification;
+                noBtn.addEventListener('touchend', (e) => { e.preventDefault(); sendNotification(); });
+                yesBtn.addEventListener('touchend', (e) => { e.preventDefault(); sendNotification(); });
 
-                // 启动追逐动画帧
                 requestAnimationFrame(chaseLoop);
-            }, 6000); // 20秒后大反转
+            }, 6000); // 6秒
         }
-
-        let yesPos = { x: 0, y: 0, init: false };
-        let noPos = { x: 0, y: 0, init: false };
 
         function chaseLoop() {
             if (!isChasingMode) return;
             const yesBtn = document.getElementById('yes-btn');
             const noBtn = document.getElementById('no-btn');
 
-            if (!yesPos.init) { yesPos.x = yesBtn.offsetLeft; yesPos.y = yesBtn.offsetTop; yesPos.init = true; }
-            if (!noPos.init) { noPos.x = noBtn.offsetLeft; noPos.y = noBtn.offsetTop; noPos.init = true; }
-
-            // 围绕鼠标进行一左一右的平滑缓动追击
-            const targetYesX = mouseX - 140;
-            const targetYesY = mouseY - 20;
+            const targetYesX = mouseX - 100;
+            const targetYesY = mouseY + 20;
             const targetNoX = mouseX + 20;
-            const targetNoY = mouseY - 20;
+            const targetNoY = mouseY - 40;
 
-            yesPos.x += (targetYesX - yesPos.x) * 0.06;
-            yesPos.y += (targetYesY - yesPos.y) * 0.06;
-            noPos.x += (targetNoX - noPos.x) * 0.06;
-            noPos.y += (targetNoY - noPos.y) * 0.06;
+            yesPos.x += (targetYesX - yesPos.x) * 0.08;
+            yesPos.y += (targetYesY - yesPos.y) * 0.08;
+            noPos.x += (targetNoX - noPos.x) * 0.08;
+            noPos.y += (targetNoY - noPos.y) * 0.08;
 
-            yesBtn.style.left = yesPos.x + 'px';
-            yesBtn.style.top = yesPos.y + 'px';
-            noBtn.style.left = noPos.x + 'px';
-            noBtn.style.top = noPos.y + 'px';
+            yesBtn.style.transform = `translate3d(${yesPos.x}px, ${yesPos.y}px, 0)`;
+            noBtn.style.transform = `translate3d(${noPos.x}px, ${noPos.y}px, 0)`;
 
             requestAnimationFrame(chaseLoop);
         }
@@ -439,19 +468,15 @@
         function sendNotification() {
             isChasingMode = false;
             
-            // 【最适合新手的无后台无成本即时通知方案】
-            // 这里我们预留了标准的通知机制。最简单的方式是直接用 Formspree 发送邮件，或者像下面这样，点击时静默请求一个 Webhook。
-            // 提示：你可以去免费申请一个 https://formspree.io 链接替换在下方，这样只要他一点“愿意”，你的邮箱就会瞬间收到报警信！
-            
-            const formspreeEndpoint = "https://formspree.io/f/xwvjvwro"; // 可以在此替换你的免费Formspree ID
+            // 如果你想用邮箱接收真实通知，去申请 formspree.io 的链接替换在下面：
+            const formspreeEndpoint = "https://formspree.io/f/your_id_here"; 
             
             fetch(formspreeEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: "老公点击了【愿意】！快去准备庆祝生日吧！🎉" })
-            }).catch(err => console.log("通知发送完成（预留通道）"));
+            }).catch(err => console.log("通知发送完成"));
 
-            // 切换到最后一页成功场景
             nextStage(5);
         }
     </script>
